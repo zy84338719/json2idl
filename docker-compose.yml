@@ -1,0 +1,13 @@
+version: "3"
+services:
+  alist:
+    image: zy84338719/json2idl:latest
+    container_name: alist_server
+    restart: always
+    ports:
+      - '59990:59990'
+    networks:
+      - base
+networks:
+  base:
+    external: true
