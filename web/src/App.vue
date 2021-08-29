@@ -18,7 +18,7 @@
     <el-row :gutter="24">
       <el-col :span="3">
         <div class="grid-content bg-purple">
-          <el-link type="info" href="http://j2i.com/zy84338719">JSON 转 IDL</el-link>
+          <el-link type="info" href="http://j2i.murphyyi.com">JSON 转 IDL</el-link>
         </div>
       </el-col>
       <el-col :span="3">
