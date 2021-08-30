@@ -32,17 +32,22 @@ func HttpApiServer() {
 	}
 }
 
-func apiJson2IDL(w http.ResponseWriter, r *http.Request) {
+func jsonMarshal(v interface{}) []byte {
+	m, err := json.Marshal(v)
+	if err != nil {
+		return []byte{}
+	}
+	return m
+}
 
+func apiJson2IDL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		res, _ := json.Marshal(resquest{Code: 500})
+		res := jsonMarshal(resquest{Code: 500})
 		_, _ = w.Write(res)
 		return
 	}
 	var jsonData map[string]string
-	defer r.Body.Close()
 	decoder := json.NewDecoder(r.Body)
-
 	if err := decoder.Decode(&jsonData); err != nil {
 		res, _ := json.Marshal(resquest{Code: 500})
 		_, _ = w.Write(res)
@@ -59,9 +64,9 @@ func apiJson2IDL(w http.ResponseWriter, r *http.Request) {
 	for _, s := range l.SubStructs {
 		c += s
 	}
-	res, err := json.Marshal(resquest{Code: 0, Data: Data{IDL: c + l.JsonStr}})
-	if err != nil {
-		res, _ := json.Marshal(resquest{Code: 500})
+	res := jsonMarshal(resquest{Code: 0, Data: Data{IDL: c + l.JsonStr}})
+	if len(res) == 0 {
+		res := jsonMarshal(resquest{Code: 500})
 		_, _ = w.Write(res)
 		return
 	}
