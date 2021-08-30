@@ -12,7 +12,7 @@
             <el-col :span="24">
               <el-form-item label-width="0" prop="JSON">
                 <el-input v-model="formData.JSON" type="textarea" placeholder="请输入待转化JSON"
-                          :autosize="{minRows: 25, maxRows: 1000}" :style="{width: '100%'}"></el-input>
+                          :autosize="{minRows: 25, maxRows: 1000}" :style="{width: '100%'}" @change='changeJson'></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -66,6 +66,14 @@ export default {
   components: {},
   props: [],
   data() {
+    const checkJson = (rule,value,callback)=>{
+        try {
+          JSON.parse(value);
+        }catch (e) {
+          callback(new Error('json格式错误'))
+        }
+        callback()
+    }
     return {
       formData: {
         JSON: undefined,
@@ -74,8 +82,9 @@ export default {
       },
       rules: {
         JSON: [{
+          validator: checkJson,
           required: true,
-          message: '请输入待转化JSON',
+          message: '请输入正确的待转化JSON',
           trigger: 'blur'
         }],
         IDL: [{
@@ -150,6 +159,15 @@ export default {
     },
     selectChange(v) {
       this.formData.JSON = v
+    },
+    changeJson(v) {
+      try {
+        JSON.parse(v)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        return
+      }
+      this.formData.JSON = JSON.stringify(JSON.parse(v),null,2)
     }
   }
 }
